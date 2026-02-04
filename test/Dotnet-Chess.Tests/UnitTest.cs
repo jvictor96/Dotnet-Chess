@@ -15,6 +15,6 @@ public class Tests
     public void Test1()
     {
         Assert.That(board.pieces, Has.Count.EqualTo(32));
-        Assert.Pass();
+        Assert.That(board.positions.Values, Has.Count.EqualTo(32));
     }
 }

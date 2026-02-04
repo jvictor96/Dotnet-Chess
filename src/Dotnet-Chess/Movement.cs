@@ -1,12 +1,21 @@
 public class Movement
 {
-    Position from, to;
-    Dictionary<Position, Piece> pieces;
+    public Position from, to;
+    public Dictionary<Position, Piece>? pieces;
+    public Piece? piece;
     public Movement(Position from, Position to, Dictionary<Position, Piece> pieces)
     {
         this.from = from;
         this.to = to;
         this.pieces = pieces;
+        try
+        {
+            piece = pieces[from];
+        }
+        catch (KeyNotFoundException)
+        {
+            piece = null;
+        }
     }
 
     public static Movement fromString(String serialized, Dictionary<Position, Piece> pieces)
