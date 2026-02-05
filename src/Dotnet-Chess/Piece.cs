@@ -5,8 +5,8 @@ public enum Color
 
 public abstract class Piece
 {
-    public Position position;        
-    public Color color;
+    private Position position;        
+    private Color color;
 
     public Piece(Position position, Color color)
     {
@@ -14,8 +14,23 @@ public abstract class Piece
         this.color = color;
     }        
 
-    public abstract bool ValidateMovement(Movement movement, Dictionary<Position, Piece> positions);
-    public abstract bool IsValidRoque(Movement movement, Dictionary<Position, Piece> positions);
+    public Position GetPosition()
+    {
+        return position;
+    }  
+
+    public Color GetColor()
+    {
+        return color;
+    }
+
+    public void setPosition(Position position)
+    {
+        this.position = position;
+    }
+
+    public abstract bool ValidateMovement(MovementAttempt movement);
+    public abstract bool IsValidRoque(MovementAttempt movement);
     public abstract List<Position> GetAllPossibleDestinations();
     public abstract List<Position> GetPlacesOnThePath(Position position);
     public abstract String GetSymbol();
@@ -25,10 +40,10 @@ public class Pawn : Piece
 {
     public Pawn(Position position, Color color) : base(position, color)
     {}
-    public override bool ValidateMovement(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool ValidateMovement(MovementAttempt movement) {
         return false;
     }
-    public override bool IsValidRoque(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
     public override List<Position> GetAllPossibleDestinations() {
@@ -46,10 +61,10 @@ public class Bishop : Piece
 {
     public Bishop(Position position, Color color) : base(position, color)
     {}
-    public override bool ValidateMovement(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool ValidateMovement(MovementAttempt movement) {
         return false;
     }
-    public override bool IsValidRoque(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
     public override List<Position> GetAllPossibleDestinations() {
@@ -59,7 +74,7 @@ public class Bishop : Piece
         return new List<Position>();
     }
     public override String GetSymbol() {
-        return "P";
+        return "B";
     }
 }
 
@@ -67,10 +82,12 @@ public class Rook : Piece
 {
     public Rook(Position position, Color color) : base(position, color)
     {}
-    public override bool ValidateMovement(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool ValidateMovement(MovementAttempt movement) {
+        if(movement.to.x == movement.from.x) return true;
+        if(movement.to.y == movement.from.y) return true;
         return false;
     }
-    public override bool IsValidRoque(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
     public override List<Position> GetAllPossibleDestinations() {
@@ -80,7 +97,7 @@ public class Rook : Piece
         return new List<Position>();
     }
     public override String GetSymbol() {
-        return "P";
+        return "R";
     }
 }
 
@@ -88,10 +105,10 @@ public class Queen : Piece
 {
     public Queen(Position position, Color color) : base(position, color)
     {}
-    public override bool ValidateMovement(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool ValidateMovement(MovementAttempt movement) {
         return false;
     }
-    public override bool IsValidRoque(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
     public override List<Position> GetAllPossibleDestinations() {
@@ -101,7 +118,7 @@ public class Queen : Piece
         return new List<Position>();
     }
     public override String GetSymbol() {
-        return "P";
+        return "Q";
     }
 }
 
@@ -109,10 +126,10 @@ public class Knight : Piece
 {
     public Knight(Position position, Color color) : base(position, color)
     {}
-    public override bool ValidateMovement(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool ValidateMovement(MovementAttempt movement) {
         return false;
     }
-    public override bool IsValidRoque(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
     public override List<Position> GetAllPossibleDestinations() {
@@ -122,7 +139,7 @@ public class Knight : Piece
         return new List<Position>();
     }
     public override String GetSymbol() {
-        return "P";
+        return "N";
     }
 }
 
@@ -130,10 +147,10 @@ public class King : Piece
 {
     public King(Position position, Color color) : base(position, color)
     {}
-    public override bool ValidateMovement(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool ValidateMovement(MovementAttempt movement) {
         return false;
     }
-    public override bool IsValidRoque(Movement movement, Dictionary<Position, Piece> positions) {
+    public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
     public override List<Position> GetAllPossibleDestinations() {
@@ -143,6 +160,6 @@ public class King : Piece
         return new List<Position>();
     }
     public override String GetSymbol() {
-        return "P";
+        return "K";
     }
 }

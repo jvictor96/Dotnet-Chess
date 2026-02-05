@@ -1,17 +1,15 @@
-﻿namespace board;
-
 public class Board
 {
-    public List<Piece> pieces;
-    List<Movement> movements;
-    public Dictionary<Position, Piece> positions;
-    public bool legal;
-    String? white, black, winner;
+    Dictionary<Position, Piece> positions;
+    public Board(Dictionary<Position, Piece> positions)
+    {
+        this.positions = positions;
+    }
+
     public Board()
     {
-        movements = new List<Movement>();
-        pieces = Enumerable.Range(0, 8).Select(i => new Pawn(new Position(i, 2), Color.WHITE)).Cast<Piece>().ToList();
-        pieces.AddRange(Enumerable.Range(0, 8).Select(i => new Pawn(new Position(i, 7), Color.BLACK)).Cast<Piece>().ToList());
+        List<Piece> pieces = Enumerable.Range(1, 9).Select(i => new Pawn(new Position(i, 2), Color.WHITE)).Cast<Piece>().ToList();
+        pieces.AddRange(Enumerable.Range(1, 9).Select(i => new Pawn(new Position(i, 7), Color.BLACK)).Cast<Piece>().ToList());
         pieces.Add(new Rook(new Position(1,1),Color.WHITE));
         pieces.Add(new Rook(new Position(8,1),Color.WHITE));
         pieces.Add(new Rook(new Position(1,8),Color.BLACK));
@@ -28,43 +26,17 @@ public class Board
         pieces.Add(new King(new Position(5,1),Color.WHITE));
         pieces.Add(new Queen(new Position(4,8),Color.BLACK));
         pieces.Add(new King(new Position(5,8),Color.BLACK));
-        positions = pieces.ToDictionary(piece => piece.position);
+        positions = pieces.ToDictionary(piece => piece.GetPosition());
     }
 
-    public Piece? GetPieceAt(String position)
+    public Piece? GetPieceAt(Position position)
     {
-        return positions.GetValueOrDefault(Position.fromString(position));
+        return positions.GetValueOrDefault(position);
     }
 
-    public Movement buildMovement(String movement)
+    public void Apply(ValidMovement movement)
     {
-        return Movement.fromString(movement, positions);
+        positions[movement.to] = positions[movement.from];
+        positions.Remove(movement.from);
     }
-
-    public void UpdatePositionsAndHistory(Movement movement)
-    {
-        movement.pieces = null;
-        movements.Add(movement);
-        UpdatePositions(movement);
-    }
-
-    public void UpdatePositions(Movement movement)
-    {
-        if (movement.piece == null) return;
-        movement.piece.position = movement.to;
-        positions[movement.to] = movement.piece;
-        pieces = positions.Select(kvp => kvp.Value).Cast<Piece>().ToList();
-    }
-
-    public Board moveWithoutValidation(Movement movement)
-    {
-        UpdatePositions(movement);
-        return this;
-    }
-
-    public Board move(Movement movement)
-    {
-        return this;
-    }
-
 }

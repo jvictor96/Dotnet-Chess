@@ -1,0 +1,41 @@
+﻿namespace board;
+
+public class Match
+{
+    private History history;
+    private Board board;
+    private Players players;
+    public Match()
+    {
+        history = new History();
+        board = new Board();
+        players = new Players(null, null, null);
+    }
+    public Match(Players players, Board board, History history)
+    {
+        this.history = history;
+        this.board = board;
+        this.players = players;
+    }
+
+    public Board GetBoard()
+    {
+        return board;
+    }
+
+    public MovementAttempt buildMovementAttempt(String movement)
+    {
+        return MovementAttempt.FromString(movement, board);
+    }
+
+    public Match? move(MovementAttempt movementAttempt)
+    {
+        ValidMovement? validMovement = movementAttempt.ToValidMovement();
+        if(validMovement == null) return null;
+        Color color = validMovement.GetColor();
+        if(!history.RightTurn(color)) return null;
+        validMovement.Apply();
+        return this;
+    }
+
+}
