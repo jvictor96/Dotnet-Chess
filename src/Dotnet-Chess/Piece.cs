@@ -5,7 +5,7 @@ public enum Color
 
 public abstract class Piece
 {
-    private Position position;        
+    protected Position position;        
     private Color color;
 
     public Piece(Position position, Color color)
@@ -93,7 +93,13 @@ public class Rook : Piece
     public override List<Position> GetAllPossibleDestinations() {
         return new List<Position>();
     }
-    public override List<Position> GetPlacesOnThePath(Position position) {
+    public override List<Position> GetPlacesOnThePath(Position destination) {
+        if(destination.x == position.x)
+        if(destination.y > position.y) return Enumerable.Range(position.y + 1, destination.y - position.y - 1).Select(y => new Position(position.x, y)).ToList();
+        else return Enumerable.Range(destination.y + 1, position.y - destination.y - 1).Select(y => new Position(position.x, y)).ToList();
+        if(destination.y == position.y)
+        if(destination.x > position.x) return Enumerable.Range(position.x + 1, destination.x - position.x - 1).Select(x => new Position(x, position.y)).ToList();
+        else return Enumerable.Range(destination.x + 1, position.x - destination.x - 1).Select(x => new Position(x, position.y)).ToList();
         return new List<Position>();
     }
     public override String GetSymbol() {

@@ -32,11 +32,26 @@ public class MovementAttempt
 
     private bool IsMovementValid()
     {
+        Piece? piece = GetPiece();
+        if(piece == null) return false;
         return new List<bool>() {
+            piece.ValidateMovement(this),
             IsMovementInsideTheBoard(),
-            IsValidPieceWise(),
-            IsPAthFree()
+            IsDestinationFree(),
+            IsDestinationOtherThanOrigin(),
+            !IsPlayerInCheck(),
+            IsPathFree()
         }.All(b => b);
+    }
+
+    private bool IsPlayerInCheck()
+    {
+        return false;
+    }
+
+    private bool IsDestinationOtherThanOrigin()
+    {
+        return true;
     }
 
     private bool IsMovementInsideTheBoard()
@@ -44,13 +59,16 @@ public class MovementAttempt
         return true;
     }
 
-    private bool IsValidPieceWise()
+    private bool IsDestinationFree()
     {
-        return true;
+        return board.GetPieceAt(to) == null || board.GetPieceAt(to)?.GetColor() != GetPiece()?.GetColor();
     }
 
-    private bool IsPAthFree()
+    private bool IsPathFree()
     {
-        return true;
+        Piece? piece = GetPiece();
+        if(piece == null) return false;
+        List<Position> positions = piece.GetPlacesOnThePath(to);
+        return !positions.Select(board.GetPieceAt).Any(p => p != null);
     }
 }

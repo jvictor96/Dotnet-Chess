@@ -33,7 +33,7 @@ public class Match
         ValidMovement? validMovement = movementAttempt.ToValidMovement();
         if(validMovement == null) return null;
         Color color = validMovement.GetColor();
-        if(!history.RightTurn(color)) return null;
+        if(history.WrongTurn(color)) return null;
         validMovement.Apply();
         return this;
     }

@@ -21,6 +21,7 @@ public class RookTest
     [TestCase("d4d5")]
     public void TestRookValidMovement(String movement)
     {
+        Assert.That(match.GetBoard().GetPieceAt(Position.FromString(movement.Substring(2,2))), Is.Null);
         match = match.move(match.buildMovementAttempt(movement));
         Assert.That(match, Is.Not.Null);
     }
