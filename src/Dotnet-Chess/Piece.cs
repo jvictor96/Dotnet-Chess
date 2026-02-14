@@ -41,16 +41,27 @@ public class Pawn : Piece
     public Pawn(Position position, Color color) : base(position, color)
     {}
     public override bool ValidateMovement(MovementAttempt movement) {
-        return false;
+        return new List<bool>() {
+            movement.to.x == movement.from.x && movement.to.y == movement.from.y + (GetColor() == Color.WHITE ? 1 : -1),
+            movement.to.x == movement.from.x && ((GetColor() == Color.WHITE && movement.from.y == 2 && movement.to.y == 4) || (GetColor() == Color.BLACK && movement.from.y == 7 && movement.to.y == 5)),
+            Math.Abs(movement.to.x - movement.from.x) == 1 && movement.to.y == movement.from.y + (GetColor() == Color.WHITE ? 1 : -1) && movement.GetPieceAtDestination() != null && movement.GetPieceAtDestination()?.GetColor() != GetColor()
+        }.Any(b => b);
     }
     public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
     public override List<Position> GetAllPossibleDestinations() {
-        return new List<Position>();
+        return new List<Position>() {
+            new Position(position.x, position.y + (GetColor() == Color.WHITE ? 1 : -1)),
+            new Position(position.x, position.y + (GetColor() == Color.WHITE ? 2 : -2)),
+            new Position(position.x + 1, position.y + (GetColor() == Color.WHITE ? 1 : -1)),
+            new Position(position.x - 1, position.y + (GetColor() == Color.WHITE ? 1 : -1))
+        };
     }
     public override List<Position> GetPlacesOnThePath(Position position) {
-        return new List<Position>();
+        return Math.Abs(this.position.y - position.y) > 1 ? new List<Position>() {
+            new Position(this.position.x, this.position.y + (GetColor() == Color.WHITE ? 1 : -1))
+        } : new List<Position>();
     }
     public override String GetSymbol() {
         return "P";

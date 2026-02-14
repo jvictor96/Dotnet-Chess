@@ -8,6 +8,10 @@ public class MovementAttempt
         this.to = to;
         this.board = board;
     }
+    public Piece? GetPieceAtDestination()
+    {
+        return board.GetPieceAt(to);
+    }
 
     public static MovementAttempt FromString(string serialized, Board board)
     {
