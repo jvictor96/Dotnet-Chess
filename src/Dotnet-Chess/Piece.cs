@@ -61,17 +61,36 @@ public class Bishop : Piece
 {
     public Bishop(Position position, Color color) : base(position, color)
     {}
+    public static bool IsDiagonalMovement(Position from, Position to) {
+        int dx = Math.Abs(to.x - from.x);
+        int dy = Math.Abs(to.y - from.y);
+        return dx == dy && dx != 0;
+    }
     public override bool ValidateMovement(MovementAttempt movement) {
-        return false;
+        return IsDiagonalMovement(movement.from, movement.to);
     }
     public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
-    public override List<Position> GetAllPossibleDestinations() {
-        return new List<Position>();
+
+    public static List<Position> GetPossibleDiagonalPositions(Position position) {
+        int y0_down = position.y - position.x + 1;
+        int y0_up = position.y + position.x - 1;
+        List<Position> diagonal_up = Enumerable.Range(1, 8).Select(i => new Position(1 + i, y0_down + i)).ToList();
+        List<Position> diagonal_down = Enumerable.Range(1, 8).Select(i => new Position(1 + i, y0_up - i)).ToList();
+        return diagonal_up.Concat(diagonal_down).Where(p => p.x >= 1 && p.x <= 8 && p.y >= 1 && p.y <= 8).ToList();
     }
-    public override List<Position> GetPlacesOnThePath(Position position) {
-        return new List<Position>();
+    public static List<Position> GetPlacesOnTheDiagonalPath(Position from, Position to) {
+        int dx = Math.Abs(to.x - from.x);
+        int min_x = Math.Min(to.x, from.x);
+        int dy = to.y - from.y;
+        return Enumerable.Range(min_x + 1, dx - 1).Select(i => new Position(i, from.y + i * dy / dx)).ToList();
+    }
+    public override List<Position> GetAllPossibleDestinations() {
+        return GetPossibleDiagonalPositions(position);
+    }
+    public override List<Position> GetPlacesOnThePath(Position destination) {
+        return GetPlacesOnTheDiagonalPath(position, destination);
     }
     public override String GetSymbol() {
         return "B";
@@ -82,25 +101,34 @@ public class Rook : Piece
 {
     public Rook(Position position, Color color) : base(position, color)
     {}
+    public static bool IsHorizontalOrVerticalMovement(Position from, Position to) {
+        return to.x == from.x || to.y == from.y;
+    }
     public override bool ValidateMovement(MovementAttempt movement) {
-        if(movement.to.x == movement.from.x) return true;
-        if(movement.to.y == movement.from.y) return true;
-        return false;
+        return IsHorizontalOrVerticalMovement(movement.from, movement.to);
     }
     public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
-    public override List<Position> GetAllPossibleDestinations() {
+    public static List<Position> GetPossibleHorizontalAndVerticalPositions(Position position) {
+        List<Position> horizontal = Enumerable.Range(1, 8).Where(x => x != position.x).Select(x => new Position(x, position.y)).ToList();
+        List<Position> vertical = Enumerable.Range(1, 8).Where(y => y != position.y).Select(y => new Position(position.x, y)).ToList();
+        return horizontal.Concat(vertical).ToList();
+    }
+    public static List<Position> GetPlacesOnTheHorizontalOrVerticalPath(Position from, Position to) {
+        if(to.x == from.x)
+        if(to.y > from.y) return Enumerable.Range(from.y + 1, to.y - from.y - 1).Select(y => new Position(from.x, y)).ToList();
+        else return Enumerable.Range(to.y + 1, from.y - to.y - 1).Select(y => new Position(from.x, y)).ToList();
+        if(to.y == from.y)
+        if(to.x > from.x) return Enumerable.Range(from.x + 1, to.x - from.x - 1).Select(x => new Position(x, from.y)).ToList();
+        else return Enumerable.Range(to.x + 1, from.x - to.x - 1).Select(x => new Position(x, from.y)).ToList();
         return new List<Position>();
     }
+    public override List<Position> GetAllPossibleDestinations() {
+        return GetPossibleHorizontalAndVerticalPositions(position);
+    }
     public override List<Position> GetPlacesOnThePath(Position destination) {
-        if(destination.x == position.x)
-        if(destination.y > position.y) return Enumerable.Range(position.y + 1, destination.y - position.y - 1).Select(y => new Position(position.x, y)).ToList();
-        else return Enumerable.Range(destination.y + 1, position.y - destination.y - 1).Select(y => new Position(position.x, y)).ToList();
-        if(destination.y == position.y)
-        if(destination.x > position.x) return Enumerable.Range(position.x + 1, destination.x - position.x - 1).Select(x => new Position(x, position.y)).ToList();
-        else return Enumerable.Range(destination.x + 1, position.x - destination.x - 1).Select(x => new Position(x, position.y)).ToList();
-        return new List<Position>();
+        return GetPlacesOnTheHorizontalOrVerticalPath(position, destination);
     }
     public override String GetSymbol() {
         return "R";
@@ -112,15 +140,21 @@ public class Queen : Piece
     public Queen(Position position, Color color) : base(position, color)
     {}
     public override bool ValidateMovement(MovementAttempt movement) {
-        return false;
+        return Rook.IsHorizontalOrVerticalMovement(movement.from, movement.to) || Bishop.IsDiagonalMovement(movement.from, movement.to);
     }
     public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
     public override List<Position> GetAllPossibleDestinations() {
-        return new List<Position>();
+        return Rook.GetPossibleHorizontalAndVerticalPositions(position).Concat(
+            Bishop.GetPossibleDiagonalPositions(position)).ToList();
     }
-    public override List<Position> GetPlacesOnThePath(Position position) {
+    public override List<Position> GetPlacesOnThePath(Position destination) {
+        if(Rook.IsHorizontalOrVerticalMovement(position, destination)) {
+            return Rook.GetPlacesOnTheHorizontalOrVerticalPath(position, destination);
+        } else if(Bishop.IsDiagonalMovement(position, destination)) {
+            return Bishop.GetPlacesOnTheDiagonalPath(position, destination);
+        }
         return new List<Position>();
     }
     public override String GetSymbol() {
@@ -133,13 +167,24 @@ public class Knight : Piece
     public Knight(Position position, Color color) : base(position, color)
     {}
     public override bool ValidateMovement(MovementAttempt movement) {
-        return false;
+        return (Math.Abs(movement.to.x - movement.from.x) == 2 && Math.Abs(movement.to.y - movement.from.y) == 1) ||
+            (Math.Abs(movement.to.x - movement.from.x) == 1 && Math.Abs(movement.to.y - movement.from.y) == 2);
     }
     public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
     public override List<Position> GetAllPossibleDestinations() {
-        return new List<Position>();
+        return new List<Position>()
+        {
+            new Position(position.x + 2, position.y + 1),
+            new Position(position.x + 2, position.y - 1),
+            new Position(position.x - 2, position.y + 1),
+            new Position(position.x - 2, position.y - 1),
+            new Position(position.x + 1, position.y + 2),
+            new Position(position.x + 1, position.y - 2),
+            new Position(position.x - 1, position.y + 2),
+            new Position(position.x - 1, position.y - 2)
+        };
     }
     public override List<Position> GetPlacesOnThePath(Position position) {
         return new List<Position>();
@@ -154,13 +199,16 @@ public class King : Piece
     public King(Position position, Color color) : base(position, color)
     {}
     public override bool ValidateMovement(MovementAttempt movement) {
-        return false;
+        return new List<bool> {
+            Math.Abs(movement.to.x - movement.from.x) <= 1,
+            Math.Abs(movement.to.y - movement.from.y) <= 1,
+        }.All(x => x);
     }
     public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
     public override List<Position> GetAllPossibleDestinations() {
-        return new List<Position>();
+        return Enumerable.Range(-1, 3).SelectMany(dx => Enumerable.Range(-1, 3).Select(dy => new Position(position.x + dx, position.y + dy))).ToList();
     }
     public override List<Position> GetPlacesOnThePath(Position position) {
         return new List<Position>();
