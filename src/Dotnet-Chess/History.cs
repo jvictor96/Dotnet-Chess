@@ -16,4 +16,9 @@ public class History
     {
         return (movements.Count % 2 == 1 && color == Color.WHITE) || (movements.Count % 2 == 0 && color == Color.BLACK);
     }
+
+    public void AddMove(ValidMovement movement)
+    {
+        movements.Add(movement);
+    }
 }

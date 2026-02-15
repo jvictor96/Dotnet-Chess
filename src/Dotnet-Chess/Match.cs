@@ -34,6 +34,7 @@ public class Match
         if(validMovement == null) return null;
         Color color = validMovement.GetColor();
         if(history.WrongTurn(color)) return null;
+        history.AddMove(validMovement);
         validMovement.Apply();
         return this;
     }
