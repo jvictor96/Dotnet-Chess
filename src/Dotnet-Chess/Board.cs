@@ -8,8 +8,8 @@ public class Board
 
     public Board()
     {
-        List<Piece> pieces = Enumerable.Range(1, 9).Select(i => new Pawn(new Position(i, 2), Color.WHITE)).Cast<Piece>().ToList();
-        pieces.AddRange(Enumerable.Range(1, 9).Select(i => new Pawn(new Position(i, 7), Color.BLACK)).Cast<Piece>().ToList());
+        List<Piece> pieces = Enumerable.Range(1, 8).Select(i => new Pawn(new Position(i, 2), Color.WHITE)).Cast<Piece>().ToList();
+        pieces.AddRange(Enumerable.Range(1, 8).Select(i => new Pawn(new Position(i, 7), Color.BLACK)).Cast<Piece>().ToList());
         pieces.Add(new Rook(new Position(1,1),Color.WHITE));
         pieces.Add(new Knight(new Position(2,1),Color.WHITE));
         pieces.Add(new Bishop(new Position(3,1),Color.WHITE));
