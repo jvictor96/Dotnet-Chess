@@ -87,15 +87,15 @@ public class Bishop : Piece
     public static List<Position> GetPossibleDiagonalPositions(Position position) {
         int y0_down = position.y - position.x + 1;
         int y0_up = position.y + position.x - 1;
-        List<Position> diagonal_up = Enumerable.Range(1, 8).Select(i => new Position(1 + i, y0_down + i)).ToList();
-        List<Position> diagonal_down = Enumerable.Range(1, 8).Select(i => new Position(1 + i, y0_up - i)).ToList();
+        List<Position> diagonal_up = Enumerable.Range(0, 8).Select(i => new Position(1 + i, y0_down + i)).ToList();
+        List<Position> diagonal_down = Enumerable.Range(0, 8).Select(i => new Position(1 + i, y0_up - i)).ToList();
         return diagonal_up.Concat(diagonal_down).Where(p => p.x >= 1 && p.x <= 8 && p.y >= 1 && p.y <= 8).ToList();
     }
     public static List<Position> GetPlacesOnTheDiagonalPath(Position from, Position to) {
-        int dx = Math.Abs(to.x - from.x);
-        int min_x = Math.Min(to.x, from.x);
-        int dy = to.y - from.y;
-        return Enumerable.Range(min_x + 1, dx - 1).Select(i => new Position(i, from.y + i * dy / dx)).ToList();
+        int pace_x = to.x > from.x ? 1 : -1;
+        int pace_y = to.y > from.y ? 1 : -1;
+        if (!IsDiagonalMovement(from, to)) return new List<Position>();
+        return Enumerable.Range(1, Math.Abs(to.x - from.x) - 1).Select(i => new Position(from.x + i * pace_x, from.y + i * pace_y)).ToList();
     }
     public override List<Position> GetAllPossibleDestinations() {
         return GetPossibleDiagonalPositions(position);

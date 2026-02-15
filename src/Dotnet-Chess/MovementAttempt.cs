@@ -55,12 +55,13 @@ public class MovementAttempt
 
     private bool IsDestinationOtherThanOrigin()
     {
-        return true;
+        return to.x != from.x || to.y != from.y;
     }
 
     private bool IsMovementInsideTheBoard()
     {
-        return true;
+        return to.x >= 1 && to.x <= 8 && to.y >= 1 && to.y <= 8;
+
     }
 
     private bool IsDestinationFree()
