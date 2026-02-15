@@ -5,11 +5,11 @@ public class Match
     private History history;
     private Board board;
     private Players players;
-    public Match()
+    public Match(Players? players = null)
     {
         history = new History();
         board = new Board();
-        players = new Players(null, null, null);
+        this.players = players ?? new Players(null, null, null);
     }
     public Match(Players players, Board board, History history)
     {
@@ -21,6 +21,11 @@ public class Match
     public Board GetBoard()
     {
         return board;
+    }
+
+    public Players GetPlayers()
+    {
+        return players;
     }
 
     public MovementAttempt buildMovementAttempt(String movement)
