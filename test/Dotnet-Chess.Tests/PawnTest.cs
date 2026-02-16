@@ -3,7 +3,7 @@ using board;
 
 public class PawnTest
 {
-    Match match;
+    Match? match;
 
     [SetUp]
     public void Setup()

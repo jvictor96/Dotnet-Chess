@@ -29,9 +29,23 @@ public abstract class Piece
         this.position = position;
     }
 
+    public static Piece CloneFactory(Piece piece)
+    {
+        return piece switch
+        {
+            Pawn p => new Pawn(new Position(p.GetPosition().x, p.GetPosition().y), p.GetColor()),
+            Bishop b => new Bishop(new Position(b.GetPosition().x, b.GetPosition().y), b.GetColor()),
+            Rook r => new Rook(new Position(r.GetPosition().x, r.GetPosition().y), r.GetColor()),
+            Queen q => new Queen(new Position(q.GetPosition().x, q.GetPosition().y), q.GetColor()),
+            Knight k => new Knight(new Position(k.GetPosition().x, k.GetPosition().y), k.GetColor()),
+            King ki => new King(new Position(ki.GetPosition().x, ki.GetPosition().y), ki.GetColor()),
+            _ => throw new NotImplementedException()
+        };
+    }
+
     public abstract bool ValidateMovement(MovementAttempt movement);
     public abstract bool IsValidRoque(MovementAttempt movement);
-    public abstract List<Position> GetAllPossibleDestinations();
+    public abstract List<MovementAttempt> GetAllPossibleMovementAttempts(Board board);
     public abstract List<Position> GetPlacesOnThePath(Position position);
     public abstract String GetSymbol();
 }
@@ -42,20 +56,20 @@ public class Pawn : Piece
     {}
     public override bool ValidateMovement(MovementAttempt movement) {
         return new List<bool>() {
-            movement.to.x == movement.from.x && movement.to.y == movement.from.y + (GetColor() == Color.WHITE ? 1 : -1),
-            movement.to.x == movement.from.x && ((GetColor() == Color.WHITE && movement.from.y == 2 && movement.to.y == 4) || (GetColor() == Color.BLACK && movement.from.y == 7 && movement.to.y == 5)),
+            movement.to.x == movement.from.x && movement.to.y == movement.from.y + (GetColor() == Color.WHITE ? 1 : -1) && movement.GetPieceAtDestination() == null,
+            movement.to.x == movement.from.x && ((GetColor() == Color.WHITE && movement.from.y == 2 && movement.to.y == 4) || (GetColor() == Color.BLACK && movement.from.y == 7 && movement.to.y == 5)) && movement.GetPieceAtDestination() == null,
             Math.Abs(movement.to.x - movement.from.x) == 1 && movement.to.y == movement.from.y + (GetColor() == Color.WHITE ? 1 : -1) && movement.GetPieceAtDestination() != null && movement.GetPieceAtDestination()?.GetColor() != GetColor()
         }.Any(b => b);
     }
     public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
-    public override List<Position> GetAllPossibleDestinations() {
-        return new List<Position>() {
-            new Position(position.x, position.y + (GetColor() == Color.WHITE ? 1 : -1)),
-            new Position(position.x, position.y + (GetColor() == Color.WHITE ? 2 : -2)),
-            new Position(position.x + 1, position.y + (GetColor() == Color.WHITE ? 1 : -1)),
-            new Position(position.x - 1, position.y + (GetColor() == Color.WHITE ? 1 : -1))
+    public override List<MovementAttempt> GetAllPossibleMovementAttempts(Board board) {
+        return new List<MovementAttempt>() {
+            new MovementAttempt(position, new Position(position.x, position.y + (GetColor() == Color.WHITE ? 1 : -1)), board),
+            new MovementAttempt(position, new Position(position.x, position.y + (GetColor() == Color.WHITE ? 2 : -2)), board),
+            new MovementAttempt(position, new Position(position.x + 1, position.y + (GetColor() == Color.WHITE ? 1 : -1)), board),
+            new MovementAttempt(position, new Position(position.x - 1, position.y + (GetColor() == Color.WHITE ? 1 : -1)), board)
         };
     }
     public override List<Position> GetPlacesOnThePath(Position position) {
@@ -97,8 +111,8 @@ public class Bishop : Piece
         if (!IsDiagonalMovement(from, to)) return new List<Position>();
         return Enumerable.Range(1, Math.Abs(to.x - from.x) - 1).Select(i => new Position(from.x + i * pace_x, from.y + i * pace_y)).ToList();
     }
-    public override List<Position> GetAllPossibleDestinations() {
-        return GetPossibleDiagonalPositions(position);
+    public override List<MovementAttempt> GetAllPossibleMovementAttempts(Board board) {
+        return GetPossibleDiagonalPositions(position).Select(p => new MovementAttempt(position, p, board)).ToList();
     }
     public override List<Position> GetPlacesOnThePath(Position destination) {
         return GetPlacesOnTheDiagonalPath(position, destination);
@@ -135,8 +149,8 @@ public class Rook : Piece
         else return Enumerable.Range(to.x + 1, from.x - to.x - 1).Select(x => new Position(x, from.y)).ToList();
         return new List<Position>();
     }
-    public override List<Position> GetAllPossibleDestinations() {
-        return GetPossibleHorizontalAndVerticalPositions(position);
+    public override List<MovementAttempt> GetAllPossibleMovementAttempts(Board board) {
+        return GetPossibleHorizontalAndVerticalPositions(position).Select(p => new MovementAttempt(position, p, board)).ToList();
     }
     public override List<Position> GetPlacesOnThePath(Position destination) {
         return GetPlacesOnTheHorizontalOrVerticalPath(position, destination);
@@ -156,9 +170,9 @@ public class Queen : Piece
     public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
-    public override List<Position> GetAllPossibleDestinations() {
+    public override List<MovementAttempt> GetAllPossibleMovementAttempts(Board board) {
         return Rook.GetPossibleHorizontalAndVerticalPositions(position).Concat(
-            Bishop.GetPossibleDiagonalPositions(position)).ToList();
+            Bishop.GetPossibleDiagonalPositions(position)).Select(p => new MovementAttempt(position, p, board)).ToList();
     }
     public override List<Position> GetPlacesOnThePath(Position destination) {
         if(Rook.IsHorizontalOrVerticalMovement(position, destination)) {
@@ -184,7 +198,7 @@ public class Knight : Piece
     public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
-    public override List<Position> GetAllPossibleDestinations() {
+    public override List<MovementAttempt> GetAllPossibleMovementAttempts(Board board) {
         return new List<Position>()
         {
             new Position(position.x + 2, position.y + 1),
@@ -195,7 +209,7 @@ public class Knight : Piece
             new Position(position.x + 1, position.y - 2),
             new Position(position.x - 1, position.y + 2),
             new Position(position.x - 1, position.y - 2)
-        };
+        }.Select(p => new MovementAttempt(position, p, board)).ToList();
     }
     public override List<Position> GetPlacesOnThePath(Position position) {
         return new List<Position>();
@@ -218,8 +232,9 @@ public class King : Piece
     public override bool IsValidRoque(MovementAttempt movement) {
         return false;
     }
-    public override List<Position> GetAllPossibleDestinations() {
-        return Enumerable.Range(-1, 3).SelectMany(dx => Enumerable.Range(-1, 3).Select(dy => new Position(position.x + dx, position.y + dy))).ToList();
+    public override List<MovementAttempt> GetAllPossibleMovementAttempts(Board board) {
+        return Enumerable.Range(-1, 3).SelectMany(dx => Enumerable.Range(-1, 3).Select(dy => new Position(position.x + dx, position.y + dy)))
+            .Select(p => new MovementAttempt(position, p, board)).ToList();
     }
     public override List<Position> GetPlacesOnThePath(Position position) {
         return new List<Position>();

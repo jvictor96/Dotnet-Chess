@@ -3,7 +3,7 @@ using board;
 
 public class QueenTest
 {
-    Match match;
+    Match? match;
 
     [SetUp]
     public void Setup()

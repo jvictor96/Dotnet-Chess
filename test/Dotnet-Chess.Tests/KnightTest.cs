@@ -3,7 +3,7 @@ using board;
 
 public class KnightTest
 {
-    Match match;
+    Match? match;
 
     [SetUp]
     public void Setup()

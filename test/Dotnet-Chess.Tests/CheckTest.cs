@@ -3,7 +3,7 @@ using board;
 
 public class CheckTest
 {
-    Match pastor, kingInCheck, blackBishopOut, blackBishopOutAndKingOpen;
+    Match? pastor, kingInCheck, blackBishopOut, blackBishopOutAndKingOpen;
 
     [SetUp]
     public void Setup()
@@ -55,7 +55,7 @@ public class CheckTest
     public void QueenMovesButStillInCheck()
     {
         kingInCheck = kingInCheck.move(kingInCheck.buildMovementAttempt("d1d3"));
-        Assert.That(kingInCheck, Is.Not.Null);
+        Assert.That(kingInCheck, Is.Null);
     }
 
     [Test]
@@ -68,7 +68,7 @@ public class CheckTest
     [Test]
     public void TestKingGoesToCheck()
     {
-        blackBishopOutAndKingOpen = blackBishopOutAndKingOpen.move(blackBishopOutAndKingOpen.buildMovementAttempt("d2d3"));
+        blackBishopOutAndKingOpen = blackBishopOutAndKingOpen.move(blackBishopOutAndKingOpen.buildMovementAttempt("d1d2"));
         Assert.That(blackBishopOutAndKingOpen, Is.Null);
     }
 

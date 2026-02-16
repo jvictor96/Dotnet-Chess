@@ -3,15 +3,13 @@ using board;
 
 public class KingTest
 {
-    Match match;
+    Match? match;
 
     [SetUp]
     public void Setup()
     {
         match = new Match();
         ValidMovement movement = match.buildMovementAttempt("e1d4").ToValidMovement(bypassValidation: true);
-        movement.Apply();
-        movement = match.buildMovementAttempt("d7d5").ToValidMovement(bypassValidation: true);
         movement.Apply();
         movement = match.buildMovementAttempt("e7e5").ToValidMovement(bypassValidation: true);
         movement.Apply();
@@ -20,7 +18,7 @@ public class KingTest
     }
 
     [TestCase("d4d3")]
-    [TestCase("d4c5")]
+    [TestCase("d4d5")]
     [TestCase("d4c4")]
     [TestCase("d4e4")]
     [TestCase("d4c4")]
@@ -48,7 +46,6 @@ public class KingTest
     }
 
     [TestCase("d4e5")]
-    [TestCase("d4d5")]
     public void TestKingCaptures(String movement)
     {
         match = match.move(match.buildMovementAttempt(movement));

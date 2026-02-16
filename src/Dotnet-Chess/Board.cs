@@ -1,3 +1,4 @@
+
 public class Board
 {
     Dictionary<Position, Piece> positions;
@@ -38,5 +39,10 @@ public class Board
     {
         positions[movement.to] = positions[movement.from];
         positions.Remove(movement.from);
+    }
+
+    public List<Piece> GetPieces()
+    {
+        return positions.Values.ToList();
     }
 }
