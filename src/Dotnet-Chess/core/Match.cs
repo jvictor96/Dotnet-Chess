@@ -34,6 +34,12 @@ public class Match
         return MovementAttempt.FromString(movement, board);
     }
 
+    public bool IsRightTurnForPlayer(string player)
+    {
+        Color color = player == players.white ? Color.WHITE : Color.BLACK;
+        return ! history.WrongTurn(color);
+    }
+
     public Match? move(MovementAttempt movementAttempt)
     {
         ValidMovement? validMovement = movementAttempt.ToValidMovement();

@@ -1,15 +1,24 @@
+using board;
+
 public class ChallengeCommand : KeyboardHandler
 {
-    private readonly GameMachine gameMachine;
+    private readonly Keyboard keyboard;
+    private readonly IMatchPersistence matchPersistence;
+    private readonly string user;
 
-    public ChallengeCommand(GameMachine gameMachine)
+    public ChallengeCommand(Keyboard keyboard, IMatchPersistence matchPersistence, string user)
     {
-        this.gameMachine = gameMachine;
+        this.keyboard = keyboard;
+        this.matchPersistence = matchPersistence;
+        this.user = user;
     }
 
     public ShellMachine.State HandleKeyboard()
     {
-        gameMachine.Run(GameMachine.State.YourTurn);
+        string opponent = keyboard.Read("Who will you play against? ");
+        Match match = new Match(new Players(user, opponent, null));
+        match.Id = matchPersistence.GetNextId();
+        matchPersistence.SaveMatch(match);
         return ShellMachine.State.Listing;
     }
 }

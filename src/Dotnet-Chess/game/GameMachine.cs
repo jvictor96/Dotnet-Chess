@@ -14,11 +14,12 @@ public class GameMachine
         this.handlers = handlers;
     }
 
-    public void Run(State beginningState)
+    public void Start(State beginningState, CancellationToken cancellationToken)
     {
         currentState = beginningState;
         while (true)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             nextState = handlers[currentState].HandleMovement();
             currentState = nextState;
         }
