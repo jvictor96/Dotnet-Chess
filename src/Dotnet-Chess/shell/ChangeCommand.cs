@@ -25,11 +25,7 @@ public class ChangeCommand : KeyboardHandler
     public ShellMachine.State HandleKeyboard()
     {
         if(game != null) cancellationSource.Cancel();
-        Console.WriteLine("Listing games...");
-        boardPersistence.ListMatches().ToList().ForEach(match =>
-        {
-            Console.WriteLine($"Game ID: {match.Id}, White: {match.GetPlayers().white}, Black: {match.GetPlayers().black}, Winner: {match.GetPlayers().winner ?? "N/A"}");
-        });
+        ListCommand.FormattedListGames(boardPersistence.ListMatches().ToList());
         string input = keyboard.Read("Enter the game ID to change:");
         if (int.TryParse(input, out int gameId))
         {

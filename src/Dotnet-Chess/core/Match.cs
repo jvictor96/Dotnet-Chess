@@ -51,4 +51,8 @@ public class Match
         return this;
     }
 
+    public void SetWinner(string winner)
+    {
+        players.winner = winner;
+    }
 }
