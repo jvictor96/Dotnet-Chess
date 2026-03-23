@@ -10,7 +10,7 @@ public class Match
     {
         history = new History();
         board = new Board();
-        this.players = players ?? new Players(null, null, null);
+        this.players = players ?? new Players("null", "null", "null");
     }
     public Match(Players players, Board board, History history)
     {
@@ -48,11 +48,16 @@ public class Match
         if(history.WrongTurn(color)) return null;
         history.AddMove(validMovement);
         validMovement.Apply();
+        Color opponentColor = color == Color.WHITE ? Color.BLACK : Color.WHITE;
+        bool checkmate = board.IsPlayerInCheck(opponentColor) &&
+            board.IsItMate(opponentColor) &&
+                SetWinner(color == Color.BLACK ? players.black : players.white);
         return this;
     }
 
-    public void SetWinner(string winner)
+    public bool SetWinner(string winner)
     {
         players.winner = winner;
+        return true;
     }
 }

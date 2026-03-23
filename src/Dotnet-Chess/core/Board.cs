@@ -43,6 +43,23 @@ public class Board
         positions.Remove(movement.from);
     }
 
+    public bool IsPlayerInCheck(Color color)
+    {
+        Piece king = GetPieces().First(p => p is King && p.GetColor() == color);
+        return GetPieces().Where(p => p.GetColor() != color).Any(p => 
+            new MovementAttempt(p.GetPosition(), king.GetPosition(), this).ToValidMovement(bypassCheckValidation: true) != null
+        );
+    }
+
+    public bool IsItMate(Color color)
+    {
+        return GetPieces().Where(p => p.GetColor() == color).All(p => 
+            p.GetAllPossibleMovementAttempts(this).All(
+                m => m.ToValidMovement() == null
+            )
+        );
+    }
+
     public List<Piece> GetPieces()
     {
         return positions.Values.ToList();

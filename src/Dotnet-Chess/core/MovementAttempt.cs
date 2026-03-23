@@ -37,11 +37,10 @@ public class MovementAttempt
     private bool IsMovementValid(bool bypassCheckValidation = false)
     {
         Piece? piece = GetPiece();
-        if(piece == null) return false;
+    if(piece == null || !IsDestinationFree()) return false;
         return new List<bool>() {
             piece.ValidateMovement(this),
             IsMovementInsideTheBoard(),
-            IsDestinationFree(),
             IsDestinationOtherThanOrigin(),
             bypassCheckValidation || !WillPlayerBeInCheck(),
             IsPathFree()
@@ -52,13 +51,9 @@ public class MovementAttempt
     {
         Board hypotheticalBoard = new Board(board.GetPieces().ToDictionary(p => new Position(p.GetPosition().x, p.GetPosition().y), p => Piece.CloneFactory(p)));
         MovementAttempt hypotheticalMovement = new MovementAttempt(from, to, hypotheticalBoard);
-        ValidMovement? validMovement = hypotheticalMovement.ToValidMovement(bypassValidation: true);
-        if(validMovement == null) return true;
-        validMovement.Apply();
-        Piece king = hypotheticalBoard.GetPieces().First(p => p is King && p.GetColor() == GetPiece()?.GetColor());
-        return hypotheticalBoard.GetPieces().Where(p => p.GetColor() != GetPiece()?.GetColor()).Any(p => 
-            new MovementAttempt(p.GetPosition(), king.GetPosition(), hypotheticalBoard).ToValidMovement(bypassCheckValidation: true) != null
-        );
+        if (hypotheticalMovement.ToValidMovement(bypassValidation: true) is ValidMovement m)  m.Apply();
+        else return true;
+        return hypotheticalBoard.IsPlayerInCheck(GetPiece()!.GetColor());
     }
 
     private bool IsDestinationOtherThanOrigin()
@@ -69,7 +64,6 @@ public class MovementAttempt
     private bool IsMovementInsideTheBoard()
     {
         return to.x >= 1 && to.x <= 8 && to.y >= 1 && to.y <= 8;
-
     }
 
     private bool IsDestinationFree()
