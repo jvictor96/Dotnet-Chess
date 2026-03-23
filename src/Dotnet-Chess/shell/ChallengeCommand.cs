@@ -16,7 +16,7 @@ public class ChallengeCommand : KeyboardHandler
     public ShellMachine.State HandleKeyboard()
     {
         string opponent = keyboard.Read("Who will you play against? ");
-        Match match = new Match(new Players(user, opponent, null));
+        Match match = new Match(new Players(user, opponent, "null"));
         match.Id = matchPersistence.GetNextId();
         matchPersistence.SaveMatch(match);
         return ShellMachine.State.Listing;
