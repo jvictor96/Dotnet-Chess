@@ -7,9 +7,9 @@ public class PlayerClient : IPlayerClient
         this.playerService = playerService;
     }
 
-    public Player CreatePlayer(string name)
+    public Player CreatePlayer(string name, string email)
     {
-        return playerService.CreatePlayer(name);
+        return playerService.CreatePlayer(name, email);
     }
 
     public Player Login(string name, string password)

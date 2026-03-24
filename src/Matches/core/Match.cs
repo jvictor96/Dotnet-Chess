@@ -60,4 +60,9 @@ public class Match
         players.winner = winner;
         return true;
     }
+
+    public void Resign(string player)
+    {
+        SetWinner(player == players.white ? players.black : players.white);
+    }
 }

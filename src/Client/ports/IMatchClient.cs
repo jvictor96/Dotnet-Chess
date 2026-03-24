@@ -1,7 +1,9 @@
-public class IMatchClient
+using board;
+
+public interface IMatchClient
 {
-    List<Match> GetMatchesForPlayer(string player);
-    Match ResignMatch(string matchId, string player);
-    Match MakeMove(string matchId, string player, string movement);
-    Match ChallengePlayer(string challenger, string opponent);
+    public  List<Match> GetMatchesForPlayer(string player);
+    public Match ResignMatch(string matchId, string player);
+    public Match MakeMove(string matchId, string player, string movement);
+    public Match ChallengePlayer(string challenger, string opponent);
 }

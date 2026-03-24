@@ -1,10 +1,12 @@
+using board;
 public class MainLoop
 {
     private readonly InputRouter inputRouter;
     private readonly IKeyboard keyboard;
-    private readonly IGameView gameView;
+    private readonly IGameViewer gameView;
+    private Match? match;
 
-    public MainLoop(IKeyboard keyboard, IGameView gameView, IPlayerClient playerClient, IMatchClient matchClient)
+    public MainLoop(IKeyboard keyboard, IGameViewer gameView, IPlayerClient playerClient, IMatchClient matchClient)
     {
         this.keyboard = keyboard;
         this.gameView = gameView;
@@ -15,9 +17,14 @@ public class MainLoop
     {
         while (true)
         {
+            Console.WriteLine("Available commands:");
+            inputRouter.GetAvailableCommands().ForEach(cmd => Console.Write($" {cmd}"));
+            Console.WriteLine();
             string input = keyboard.Read("Enter command: ");
+
             inputRouter.RouteInput(input);
-            gameView.Display();
+            if (match != null)
+                gameView.DisplayBoard(match.GetBoard());
         }
     }
 }
