@@ -1,4 +1,4 @@
-public interface Keyboard
+public interface IKeyboard
 {
     string Read(string prompt);
 }
