@@ -1,3 +1,5 @@
+namespace DotnetChess.Matches.core;
+
 public class History
 {
     private List<ValidMovement> movements;

@@ -1,4 +1,4 @@
-using board;
+using DotnetChess.Matches.core;
 
 public interface IMatchPersistence
 {

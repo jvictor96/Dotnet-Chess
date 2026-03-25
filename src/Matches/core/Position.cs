@@ -1,3 +1,5 @@
+namespace DotnetChess.Matches.core;
+
 public class Position
 {
     public int x, y;

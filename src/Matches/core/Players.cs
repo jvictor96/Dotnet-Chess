@@ -1,3 +1,5 @@
+namespace DotnetChess.Matches.core;
+
 public class Players
 {
     public String winner, black, white;

@@ -1,4 +1,4 @@
-﻿namespace board;
+﻿namespace DotnetChess.Matches.core;
 
 public class Match
 {

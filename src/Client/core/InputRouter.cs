@@ -17,11 +17,11 @@ public class InputRouter
         Commands = new Dictionary<string, Action<string[]>>
         {
             { MOVE_COMMAND, args => matchClient.MakeMove(args[0], args[1], args[2]) },
-            { CREATE_PLAYER_COMMAND, args => playerClient.CreatePlayer(args[0]) },
+            { CREATE_PLAYER_COMMAND, args => playerClient.CreatePlayer(args[0], args[1]) },
             { LOGIN_COMMAND, args => playerClient.Login(args[0], args[1]) },
             { GET_MATCHES_COMMAND, args => matchClient.GetMatchesForPlayer(args[0]) },
             { RESIGN_MATCH_COMMAND, args => matchClient.ResignMatch(args[0], args[1]) },
-            { CHALLENGE_PLAYER_COMMAND, args => matchClient.ChallengePlayer(args[0], args[1]) }
+            { CHALLENGE_PLAYER_COMMAND, args => matchClient.ChallengePlayer(args[0], args[1], args[2]) }
         };
     }
 

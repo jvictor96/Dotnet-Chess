@@ -1,3 +1,5 @@
+namespace DotnetChess.Players;
+
 public class PlayerService
 {
     private readonly IPLayerPersistence playerPersistence;
@@ -8,22 +10,23 @@ public class PlayerService
         this.playerPersistence = playerPersistence;
     }
 
-    public void CreatePlayer(string name, string email)
+    public Player? CreatePlayer(string name, string email)
     {
+        return playerPersistence.SavePlayer(new Player(name, email));
     }
 
     public Player? GetPlayer(string name)
     {
-        return null;
+        return playerPersistence.LoadPlayer(name);
     }
 
     public List<Player>? GetAllPlayers()
     {
-        return null;
+        return playerPersistence.LoadAllPlayers();
     }
 
-    public Player? Login(string name)
+    public Player? Login(string name, string password)
     {
-        return null;
+        return playerPersistence.LoadPlayer(name);
     }
 }

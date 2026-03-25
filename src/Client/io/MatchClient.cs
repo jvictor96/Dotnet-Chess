@@ -1,3 +1,5 @@
+using DotnetChess.Matches.core;
+
 public class MatchClient : IMatchClient
 {
     private readonly MatchService matchService;
@@ -9,21 +11,21 @@ public class MatchClient : IMatchClient
 
     public List<Match> GetMatchesForPlayer(string player)
     {
-        return matchService.GetMatchesForPlayer(player);
+        return matchService.GetMatchesForPlayer(player).ToList();
     }
 
-    public Match ResignMatch(string matchId, string player)
+    public Match? ResignMatch(string matchId, string player)
     {
         return matchService.ResignMatch(matchId, player);
     }
 
-    public Match MakeMove(string matchId, string player, string movement)
+    public Match? MakeMove(string matchId, string player, string movement)
     {
         return matchService.MakeMove(matchId, player, movement);
     }
 
-    public Match ChallengePlayer(string challenger, string opponent)
+    public Match? ChallengePlayer(string challenger, string opponent, string movement)
     {
-        return matchService.ChallengePlayer(challenger, opponent);
+        return matchService.ChallengePlayer(challenger, opponent, movement);
     }
 }

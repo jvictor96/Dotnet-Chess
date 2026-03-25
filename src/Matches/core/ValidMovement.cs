@@ -1,3 +1,5 @@
+namespace DotnetChess.Matches.core;
+
 public class ValidMovement
 {
     public Position from, to;

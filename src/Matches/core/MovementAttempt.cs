@@ -1,3 +1,5 @@
+namespace DotnetChess.Matches.core;
+
 public class MovementAttempt
 {
     public Position from, to;

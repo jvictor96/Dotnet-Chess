@@ -1,4 +1,6 @@
-using board;
+
+using DotnetChess.Matches.core;
+
 public class MainLoop
 {
     private readonly InputRouter inputRouter;

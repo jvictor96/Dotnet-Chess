@@ -1,3 +1,4 @@
+using DotnetChess.Players;
 public class PlayerClient : IPlayerClient
 {
     private readonly PlayerService playerService;
@@ -7,12 +8,12 @@ public class PlayerClient : IPlayerClient
         this.playerService = playerService;
     }
 
-    public Player CreatePlayer(string name, string email)
+    public Player? CreatePlayer(string name, string email)
     {
         return playerService.CreatePlayer(name, email);
     }
 
-    public Player Login(string name, string password)
+    public Player? Login(string name, string password)
     {
         return playerService.Login(name, password);
     }

@@ -1,3 +1,5 @@
+namespace DotnetChess.Matches.core;
+
 public enum Color
 {
     BLACK, WHITE

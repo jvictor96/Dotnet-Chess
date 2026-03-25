@@ -1,1 +1,1 @@
-global using NUnit.Framework;
+namespace DotnetChess.Matches.core;

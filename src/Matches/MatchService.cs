@@ -1,12 +1,14 @@
-using board;
+namespace DotnetChess.Matches.core;
 public class MatchService
 {
     private readonly IMatchPersistence matchPersistence;
+    private readonly IPlayerClient playerClient;
 
 
-    public MatchService(IMatchPersistence matchPersistence)
+    public MatchService(IMatchPersistence matchPersistence, IPlayerClient playerClient)
     {
         this.matchPersistence = matchPersistence;
+        this.playerClient = playerClient;
     }
 
     public IEnumerable<Match> GetMatchesForPlayer(string player)
@@ -33,6 +35,10 @@ public class MatchService
 
     public Match? ChallengePlayer(string challenger, string opponent, string movement)
     {
+        Player? challengerPlayer = playerClient.GetPlayer(challenger);
+        Player? opponentPlayer = playerClient.GetPlayer(opponent);
+        if (challengerPlayer == null || opponentPlayer == null) return null;
+
         Match match = new Match(new Players(challenger, opponent, "null"));
         Match? movedMatch = match.move(match.buildMovementAttempt(movement));
         matchPersistence.SaveMatch(movedMatch ?? match);

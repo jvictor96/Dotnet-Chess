@@ -1,3 +1,4 @@
+using DotnetChess.Matches.core;
 public class NoViewAdapter : IGameViewer
 {
     public void DisplayBoard(Board board)

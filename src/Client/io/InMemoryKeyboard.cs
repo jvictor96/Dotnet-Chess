@@ -1,4 +1,4 @@
-public class InMemoryKeyboard : Keyboard
+public class InMemoryKeyboard : IKeyboard
 {
     private Queue<string> inputs = new Queue<string>();
 

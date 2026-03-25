@@ -1,6 +1,5 @@
 using NUnit.Framework;
-using board;
-
+namespace DotnetChess.Matches.core;
 public class GeneralTest
 {
     Match? match;
