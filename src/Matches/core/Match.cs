@@ -29,6 +29,11 @@ public class Match
         return players;
     }
 
+    public History GetHistory()
+    {
+        return history;
+    }
+
     public MovementAttempt buildMovementAttempt(String movement)
     {
         return MovementAttempt.FromString(movement, board);

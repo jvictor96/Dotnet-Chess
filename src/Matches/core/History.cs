@@ -23,4 +23,9 @@ public class History
     {
         movements.Add(movement);
     }
+
+    public int Count()
+    {
+        return movements.Count;
+    }
 }

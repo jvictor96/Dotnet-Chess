@@ -16,16 +16,16 @@ public class MatchService
         return matchPersistence.ListMatches().Where(m => m.GetPlayers().white == player || m.GetPlayers().black == player);
     }
 
-    public Match? ResignMatch(string matchId, string player)
+    public Match? ResignMatch(int matchId, string player)
     {
-        Match? match = matchPersistence.LoadMatch(int.Parse(matchId));
+        Match? match = matchPersistence.LoadMatch(matchId);
         match?.Resign(player);
         return match;
     }
 
-    public Match? MakeMove(string matchId, string player, string movement)
+    public Match? MakeMove(int matchId, string player, string movement)
     {
-        Match? match = matchPersistence.LoadMatch(int.Parse(matchId));
+        Match? match = matchPersistence.LoadMatch(matchId);
         if(match == null) return null;
         if(!match.IsRightTurnForPlayer(player)) return null;
         Match? movedMatch = match.move(match.buildMovementAttempt(movement));
