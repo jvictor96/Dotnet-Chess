@@ -2,7 +2,7 @@ namespace DotnetChess.Matches.core;
 
 public class InMemoryBoards : IMatchPersistence
 {
-    private Dictionary<int, Match> matches = new Dictionary<int, Match>();
+    private Dictionary<Guid, Match> matches = new Dictionary<Guid, Match>();
     private int nextId;
 
     public void SaveMatch(Match match)
@@ -10,17 +10,12 @@ public class InMemoryBoards : IMatchPersistence
         matches[match.Id] = match;
     }
 
-    public Match LoadMatch(int id)
+    public Match LoadMatch(Guid id)
     {
         return matches[id];
     }
     public IEnumerable<Match> ListMatches()
     {
         return matches.Values;
-    }
-    public int GetNextId()
-    {
-        nextId += 1;
-        return nextId;
     }
 }

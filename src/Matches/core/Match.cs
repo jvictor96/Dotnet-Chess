@@ -5,9 +5,10 @@ public class Match
     private History history;
     private Board board;
     private Players players;
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public Match(Players? players = null)
     {
+        Id = Guid.NewGuid();
         history = new History();
         board = new Board();
         this.players = players ?? new Players("null", "null", "null");

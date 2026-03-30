@@ -1,5 +1,5 @@
 namespace DotnetChess.Matches.core;
-public class MatchService
+public class MatchService: IMatchService
 {
     private readonly IMatchPersistence matchPersistence;
     private readonly IPlayerClient playerClient;
@@ -15,15 +15,14 @@ public class MatchService
     {
         return matchPersistence.ListMatches().Where(m => m.GetPlayers().white == player || m.GetPlayers().black == player);
     }
-
-    public Match? ResignMatch(int matchId, string player)
+    public Match? ResignMatch(Guid matchId, string player)
     {
         Match? match = matchPersistence.LoadMatch(matchId);
         match?.Resign(player);
         return match;
     }
 
-    public Match? MakeMove(int matchId, string player, string movement)
+    public Match? MakeMove(Guid matchId, string player, string movement)
     {
         Match? match = matchPersistence.LoadMatch(matchId);
         if(match == null) return null;
@@ -39,7 +38,7 @@ public class MatchService
         Player? opponentPlayer = playerClient.GetPlayer(opponent);
         if (challengerPlayer == null || opponentPlayer == null) return null;
 
-        Match match = new Match(new Players(challenger, opponent, "null"));
+        Match match = new Match(new Players(challenger, opponent, ""));
         Match? movedMatch = match.move(match.buildMovementAttempt(movement));
         matchPersistence.SaveMatch(movedMatch ?? match);
         return movedMatch ?? match;
